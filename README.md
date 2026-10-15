@@ -4,4 +4,4 @@ This public repository contains only the download page and signed update metadat
 
 Windows installers and update packages are available in Releases. Existing customers install Setup once; subsequent upgrades are offered inside Settings.
 
-Cloudflare Pages: deploy this repository's main branch without a build command, output directory `/`. Attach only `updates.wasimranjha.com` as a custom domain. Leave the portfolio Pages project and apex/www DNS records unchanged.
+Cloudflare Pages: deploy index.html, _headers and _redirects using Direct Upload, or connect this repository's main branch without a build command, output directory `/`. The /latest.json redirect follows the signed GitHub manifest automatically; releases need no Cloudflare credentials. Attach only `updates.wasimranjha.com` as a custom domain. Leave the portfolio Pages project and apex/www DNS records unchanged.
