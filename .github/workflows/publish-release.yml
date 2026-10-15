@@ -59,6 +59,7 @@ jobs:
           assert hashlib.file_digest(package.open('rb'), 'sha256').hexdigest().lower() == asset['SHA256'].lower()
           with zipfile.ZipFile(package) as archive:
               assert not any(re.search(r'\.(db|db-wal|db-shm|lic|pem)$|private_key', entry.filename, re.I) for entry in archive.infolist()), 'Client data/key file in package'
+          pathlib.Path('/tmp/release-notes.md').write_text(asset.get('NotesMarkdown') or f'Apex Mobile POS {version}. Update from Settings after saving your work.')
           print('PASS: build artifact, production signature and package checksum verified.')
           PY
       - name: Publish binaries, then advance the signed update feed
@@ -66,7 +67,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_VERSION: ${{ inputs.version }}
         run: |
-          gh release create "v$RELEASE_VERSION" verified-release/* --repo "$GITHUB_REPOSITORY" --title "Apex Mobile POS $RELEASE_VERSION" --notes 'Install Windows Setup once to enable in-app updates. Future updates appear in Settings. Existing shop data remains under the same Windows user profile.' --latest
+          gh release create "v$RELEASE_VERSION" verified-release/* --repo "$GITHUB_REPOSITORY" --title "Apex Mobile POS $RELEASE_VERSION" --notes-file /tmp/release-notes.md --latest
           python3 - <<'PY'
           import os, json, base64, urllib.request, urllib.error
           endpoint = f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/contents/latest.json"
